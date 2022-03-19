@@ -19,7 +19,7 @@ namespace Digi.PBDrawAPI
     {
         const int LimitObjectsPerPB = 1000;
 
-        public static PBDrawMod Instance;
+        bool Requirements => MyAPIGateway.Session.IsServer && MyAPIGateway.Session.OnlineMode == MyOnlineModeEnum.OFFLINE;
 
         Dictionary<IMyProgrammableBlock, PBDrawHandler> DrawPerPB;
         List<IMyProgrammableBlock> RemovePBs;
@@ -32,9 +32,7 @@ namespace Digi.PBDrawAPI
         {
             try
             {
-                Instance = this;
-
-                if(!MyAPIGateway.Session.IsServer || MyAPIGateway.Session.OnlineMode != MyOnlineModeEnum.OFFLINE)
+                if(!Requirements)
                     return;
 
                 DrawPerPB = new Dictionary<IMyProgrammableBlock, PBDrawHandler>();
@@ -58,21 +56,16 @@ namespace Digi.PBDrawAPI
 
         public override void BeforeStart()
         {
-            if(!MyAPIGateway.Session.IsServer)
-                return;
-
-            if(MyAPIGateway.Session.OnlineMode != MyOnlineModeEnum.OFFLINE)
+            if(!Requirements)
             {
-                string msg = $"ERROR: Can't use DebugDrawForPB mod in any online mode (currently={MyAPIGateway.Session.OnlineMode.ToString()})";
-                MyLog.Default.WriteLine(msg);
-                MyAPIGateway.Utilities.ShowNotification(msg);
+                string msg = $"Can't use PB draw mod in any online mode (currently={MyAPIGateway.Session.OnlineMode.ToString()})";
+                MyLog.Default.WriteLine($"ERROR: {msg}");
+                MyAPIGateway.Utilities.ShowMessage("ERROR", msg);
             }
         }
 
         protected override void UnloadData()
         {
-            Instance = null;
-
             MyEntities.OnEntityCreate -= EntityCreated;
         }
 
@@ -95,7 +88,7 @@ namespace Digi.PBDrawAPI
         {
             try
             {
-                if(DrawPerPB.Count <= 0)
+                if(DrawPerPB == null || DrawPerPB.Count <= 0)
                     return;
 
                 foreach(KeyValuePair<IMyProgrammableBlock, PBDrawHandler> kv in DrawPerPB)
