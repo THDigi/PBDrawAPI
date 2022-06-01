@@ -1,36 +1,102 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VRage.Game;
 using IMyProgrammableBlock = Sandbox.ModAPI.Ingame.IMyProgrammableBlock;
 
-namespace Digi.PBDrawAPI
+namespace Digi.PBDebugAPI
 {
-    public class PBDrawHandler
+    // TODO: rename file same as the class after commit
+    public class DebugObjectHost
     {
-        public int NextId;
+        // Important for IDs to start from 1 to avoid default values being used to remove, such as HudNotification(ref id) where id is just a default value field.
+        public const int StartId = 1;
 
-        //public readonly IMyPB PB;
-        public readonly Dictionary<int, DrawObject> DrawObjects = new Dictionary<int, DrawObject>();
+        int NextId = StartId;
+        public readonly Dictionary<int, DebugObjectBase> Objects = new Dictionary<int, DebugObjectBase>();
 
         static readonly List<int> RemoveIds = new List<int>();
 
-        public PBDrawHandler(IMyProgrammableBlock pb)
+        public DebugObjectHost(IMyProgrammableBlock pb)
         {
-            //PB = pb;
         }
 
-        public bool Draw()
+        public int Add(DebugObjectBase obj)
+        {
+            int id = NextId;
+            Objects.Add(id, obj);
+
+            NextId++;
+            if(NextId == int.MaxValue)
+                throw new Exception($"Object id overflow, you really already added {int.MaxValue} objects for one PB ?!");
+
+            return id;
+        }
+
+        public void Remove(int id)
+        {
+            DebugObjectBase drawObject;
+            if(Objects.TryGetValue(id, out drawObject))
+            {
+                Objects.Remove(id);
+                drawObject.Dispose();
+            }
+        }
+
+        public void RemoveAll()
+        {
+            try
+            {
+                foreach(DebugObjectBase drawObject in Objects.Values)
+                {
+                    drawObject.Dispose();
+                }
+            }
+            finally
+            {
+                Objects.Clear();
+
+                // probably more reliable if it doesn't reset...
+                //NextId = StartId;
+            }
+        }
+
+        public void RemoveTypes<T>() where T : class
+        {
+            RemoveIds.Clear();
+
+            foreach(KeyValuePair<int, DebugObjectBase> kv in Objects)
+            {
+                DebugObjectBase drawObject = kv.Value;
+                if(drawObject is T)
+                {
+                    drawObject.Dispose();
+                    RemoveIds.Add(kv.Key);
+                }
+            }
+
+            foreach(int id in RemoveIds)
+            {
+                Objects.Remove(id);
+            }
+
+            RemoveIds.Clear();
+        }
+
+        public bool Update()
         {
             bool paused = MyParticlesManager.Paused;
 
-            foreach(KeyValuePair<int, DrawObject> kv in DrawObjects)
+            foreach(KeyValuePair<int, DebugObjectBase> kv in Objects)
             {
-                DrawObject drawObj = kv.Value;
+                DebugObjectBase drawObj = kv.Value;
 
-                drawObj.Draw();
+                drawObj.Update();
 
-                if(!paused && drawObj.TicksToLive >= 0 && --drawObj.TicksToLive <= 0)
+                if(!paused && drawObj.LiveSeconds >= 0)
                 {
-                    RemoveIds.Add(kv.Key);
+                    drawObj.LiveSeconds -= (1f / 60f);
+                    if(drawObj.LiveSeconds <= 0)
+                        RemoveIds.Add(kv.Key);
                 }
             }
 
@@ -38,7 +104,7 @@ namespace Digi.PBDrawAPI
             {
                 foreach(int id in RemoveIds)
                 {
-                    DrawObjects.Remove(id);
+                    Objects.Remove(id);
                 }
 
                 RemoveIds.Clear();

@@ -8,105 +8,34 @@ using UpdateFrequency = Sandbox.ModAPI.Ingame.UpdateFrequency;
 using UpdateType = Sandbox.ModAPI.Ingame.UpdateType;
 using MyGridProgram = Sandbox.ModAPI.Ingame.MyGridProgram;
 
-namespace PB
+namespace PB.Lite
 {
-    // Copy the DebugAPI class to your class and use it like shown here.
+    // This would be the comment-less version of the DebugAPI class you can copy to your PB script along with a quick overview of how to use it.
+    // See ForPB.cs for the commented+examples version
     public class Program : MyGridProgram
     {
         DebugAPI Debug;
 
-        int YellowLengthId;
-        const double YellowLengthDefault = 5;
-
         public Program()
         {
             Debug = new DebugAPI(this);
-
-            Debug.PrintChat("Hello there.");
-
-            // This allows local player to hold R and using mouse scroll, change that initial 5 by 0.05 per scroll. It will show up on HUD too when you do this.
-            // Then the returned id can be used to retrieve this value.
-            // For simplicity sake you should only call AddAdjustNumber() in the constructor here.
-            Debug.DeclareAdjustNumber(out YellowLengthId, YellowLengthDefault, 0.05, DebugAPI.Input.R, "Yellow line length");
-
-            Runtime.UpdateFrequency = UpdateFrequency.Update10;
         }
 
         public void Main(string argument, UpdateType updateType)
         {
-            try
-            {
-                Debug.RemoveDraw();
-
-                // various usage examples:
-
-
-                float cellSize = Me.CubeGrid.GridSize;
-                MatrixD pbm = Me.WorldMatrix;
-                Vector3D somePoint = pbm.Translation + pbm.Up * (cellSize / 2);
-
-
-                // draws a point at given 3D position, onTop set to true makes it see-through-walls.
-                Debug.DrawPoint(somePoint, Color.Red, 0.5f, onTop: true);
-
-
-                // example of using adjust number to tweak something in realtime and then get its value to use:
-                double lineLength = Debug.GetAdjustNumber(YellowLengthId, YellowLengthDefault);
-                Debug.DrawLine(somePoint, somePoint + pbm.Backward * lineLength, Color.Yellow, thickness: 0.25f, onTop: true);
-
-
-                // various shape drawing examples
-                Debug.DrawSphere(Me.WorldVolume, Color.SkyBlue, DebugAPI.Style.Wireframe);
-
-                Debug.DrawMatrix(Me.CubeGrid.WorldMatrix, onTop: true);
-
-                Debug.DrawAABB(Me.CubeGrid.WorldAABB, Color.Blue * 0.25f, DebugAPI.Style.SolidAndWireframe);
-
-                Vector3D offset = Vector3D.Half * cellSize;
-                BoundingBoxD gridLocalBB = new BoundingBoxD(Me.CubeGrid.Min * cellSize - offset, Me.CubeGrid.Max * cellSize + offset);
-                MyOrientedBoundingBoxD obb = new MyOrientedBoundingBoxD(gridLocalBB, Me.CubeGrid.WorldMatrix);
-                Debug.DrawOBB(obb, new Color(255, 0, 255));
-
-
-                // self-explanatory
-                Debug.DrawGPS("I'm here!", pbm.Translation + pbm.Backward * (cellSize / 2), Color.Blue);
-
-                Debug.PrintHUD($"Time is now: {DateTime.Now.ToLongTimeString()}");
-            }
-            catch(Exception e)
-            {
-                // example way to get notified on error then allow PB to stop (crash)
-                Debug.PrintChat($"{e.Message}\n{e.StackTrace}", font: DebugAPI.Font.Red);
-                Me.CustomData = e.ToString();
-                throw;
-            }
+            Debug.RemoveDraw();
         }
 
-        /// <summary>
-        /// Create an instance of this and hold its reference.
-        /// </summary>
         public class DebugAPI
         {
             public readonly bool ModDetected;
 
-            /// <summary>
-            /// Recommended to be used at start of Main(), unless you wish to draw things persistently and remove them manually.
-            /// <para>Removes everything except AdjustNumber and chat messages.</para>
-            /// </summary>
             public void RemoveDraw() => _removeDraw?.Invoke(_pb);
             Action<IMyProgrammableBlock> _removeDraw;
 
-            /// <summary>
-            /// Removes everything that was added by this API (except chat messages), including DeclareAdjustNumber()!
-            /// <para>For calling in Main() you should use <see cref="RemoveDraw"/> instead.</para>
-            /// </summary>
             public void RemoveAll() => _removeAll?.Invoke(_pb);
             Action<IMyProgrammableBlock> _removeAll;
 
-            /// <summary>
-            /// You can store the integer returned by other methods then remove it with this when you wish.
-            /// <para>Or you can not use this at all and call <see cref="RemoveDraw"/> on every Main() so that your drawn things live a single PB run.</para>
-            /// </summary>
             public void Remove(int id) => _remove?.Invoke(_pb, id);
             Action<IMyProgrammableBlock, int> _remove;
 
@@ -128,44 +57,21 @@ namespace PB
             public int DrawMatrix(MatrixD matrix, float length = 1f, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _matrix?.Invoke(_pb, matrix, length, thickness, seconds, onTop ?? _defaultOnTop) ?? -1;
             Func<IMyProgrammableBlock, MatrixD, float, float, float, bool, int> _matrix;
 
-            /// <summary>
-            /// Adds a HUD marker for a world position.
-            /// <para>White is used if <paramref name="color"/> is null.</para>
-            /// </summary>
             public int DrawGPS(string name, Vector3D origin, Color? color = null, float seconds = DefaultSeconds) => _gps?.Invoke(_pb, name, origin, color, seconds) ?? -1;
             Func<IMyProgrammableBlock, string, Vector3D, Color?, float, int> _gps;
 
-            /// <summary>
-            /// Adds a notification center on screen. Do not give 0 or lower <paramref name="seconds"/>.
-            /// </summary>
             public int PrintHUD(string message, Font font = Font.Debug, float seconds = 2) => _printHUD?.Invoke(_pb, message, font.ToString(), seconds) ?? -1;
             Func<IMyProgrammableBlock, string, string, float, int> _printHUD;
 
-            /// <summary>
-            /// Shows a message in chat as if sent by the PB (or whoever you want the sender to be)
-            /// <para>If <paramref name="sender"/> is null, the PB's CustomName is used.</para>
-            /// <para>The <paramref name="font"/> affects the fontface and color of the entire message, while <paramref name="senderColor"/> only affects the sender name's color.</para>
-            /// </summary>
             public void PrintChat(string message, string sender = null, Color? senderColor = null, Font font = Font.Debug) => _chat?.Invoke(_pb, message, sender, senderColor, font.ToString());
             Action<IMyProgrammableBlock, string, string, Color?, string> _chat;
 
-            /// <summary>
-            /// Used for realtime adjustments, allows you to hold the specified key/button with mouse scroll in order to adjust the <paramref name="initial"/> number by <paramref name="step"/> amount.
-            /// <para>Add this once at start then store the returned id, then use that id with <see cref="GetAdjustNumber(int)"/>.</para>
-            /// </summary>
             public void DeclareAdjustNumber(out int id, double initial, double step = 0.05, Input modifier = Input.Control, string label = null) => id = _adjustNumber?.Invoke(_pb, initial, step, modifier.ToString(), label) ?? -1;
             Func<IMyProgrammableBlock, double, double, string, string, int> _adjustNumber;
 
-            /// <summary>
-            /// See description for: <see cref="DeclareAdjustNumber(double, double, Input, string)"/>.
-            /// <para>The <paramref name="noModDefault"/> is returned when the mod is not present.</para>
-            /// </summary>
             public double GetAdjustNumber(int id, double noModDefault = 1) => _getAdjustNumber?.Invoke(_pb, id) ?? noModDefault;
             Func<IMyProgrammableBlock, int, double> _getAdjustNumber;
 
-            /// <summary>
-            /// Gets simulation tick since this session started. Returns -1 if mod is not present.
-            /// </summary>
             public int GetTick() => _tick?.Invoke() ?? -1;
             Func<int> _tick;
 
@@ -179,11 +85,6 @@ namespace PB
             IMyProgrammableBlock _pb;
             bool _defaultOnTop;
 
-            /// <summary>
-            /// NOTE: if mod is not present then methods will simply not do anything, therefore you can leave the methods in your released code.
-            /// </summary>
-            /// <param name="program">pass `this`.</param>
-            /// <param name="drawOnTopDefault">set the default for onTop on all objects that have such an option.</param>
             public DebugAPI(MyGridProgram program, bool drawOnTopDefault = false)
             {
                 if(program == null)
@@ -210,9 +111,7 @@ namespace PB
                     Assign(out _adjustNumber, methods["DeclareAdjustNumber"]);
                     Assign(out _getAdjustNumber, methods["GetAdjustNumber"]);
                     Assign(out _tick, methods["Tick"]);
-
-                    RemoveAll(); // cleanup from past compilations on this same PB
-
+                    RemoveAll();
                     ModDetected = true;
                 }
             }

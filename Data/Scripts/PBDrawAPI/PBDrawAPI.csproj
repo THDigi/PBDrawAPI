@@ -122,6 +122,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatCommands.cs" />
+    <Compile Include="ForPB_Lite.cs" />
     <Compile Include="ForPB.cs" />
     <Compile Include="DrawObject.cs" />
     <Compile Include="APIHandler.cs" />

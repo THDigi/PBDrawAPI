@@ -2,22 +2,28 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Sandbox.ModAPI;
+using VRage;
 
-namespace Digi.PBDrawAPI
+namespace Digi.PBDebugAPI
 {
     public class APIHandler
     {
         public readonly string PropertyId;
         public bool Created { get; private set; }
 
+        private readonly PBDebugMod Mod;
+
         ImmutableDictionary<string, Delegate> Functions;
         ImmutableDictionary<string, Delegate>.Builder Builder;
 
-        public APIHandler(string propertyId)
+        public APIHandler(PBDebugMod mod, string propertyId)
         {
+            Mod = mod;
             PropertyId = propertyId;
             Builder = ImmutableDictionary.CreateBuilder<string, Delegate>();
         }
+
+        public void Dispose() { }
 
         public void AddMethod(string name, Delegate method)
         {
@@ -44,6 +50,15 @@ namespace Digi.PBDrawAPI
 
         IReadOnlyDictionary<string, Delegate> Getter(IMyTerminalBlock block)
         {
+            if(Functions == null)
+                throw new Exception("API was not generated yet... a PB needs to exist first.");
+
+            IMyProgrammableBlock pb = block as IMyProgrammableBlock;
+            if(pb == null)
+                throw new Exception("The API can only be retrieved from a PB");
+
+            Mod.VerifyAPI(pb);
+
             return Functions;
         }
     }
