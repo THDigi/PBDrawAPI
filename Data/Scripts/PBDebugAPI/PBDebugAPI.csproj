@@ -123,14 +123,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APICalls.cs" />
     <Compile Include="ChatCommands.cs" />
     <Compile Include="ForPB_Lite.cs" />
     <Compile Include="ForPB.cs" />
     <Compile Include="DebugObjects.cs" />
-    <Compile Include="APIHandler.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="DebugObjectHost.cs" />
     <Compile Include="PBDebugAPIMod.cs" />
+    <Compile Include="PBInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\..\..\_SharedCode\SEWhitelistChecker.dll" />
