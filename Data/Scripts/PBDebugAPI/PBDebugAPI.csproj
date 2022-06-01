@@ -57,6 +57,7 @@
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Steam\steamapps\common\SpaceEngineers\Bin64\netstandard.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ProtoBuf.Net.Core">
       <HintPath>C:\Steam\steamapps\common\SpaceEngineers\Bin64\ProtoBuf.Net.Core.dll</HintPath>
@@ -125,11 +126,11 @@
     <Compile Include="ChatCommands.cs" />
     <Compile Include="ForPB_Lite.cs" />
     <Compile Include="ForPB.cs" />
-    <Compile Include="DrawObject.cs" />
+    <Compile Include="DebugObjects.cs" />
     <Compile Include="APIHandler.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="PBDrawHandler.cs" />
-    <Compile Include="PBDrawMod.cs" />
+    <Compile Include="DebugObjectHost.cs" />
+    <Compile Include="PBDebugAPIMod.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\..\..\_SharedCode\SEWhitelistChecker.dll" />

@@ -11,9 +11,9 @@ namespace Digi.PBDebugAPI
     {
         const string MainCommand = "/pbdraw";
 
-        readonly PBDebugMod Mod;
+        readonly PBDebugAPIMod Mod;
 
-        public ChatCommands(PBDebugMod mod)
+        public ChatCommands(PBDebugAPIMod mod)
         {
             Mod = mod;
 

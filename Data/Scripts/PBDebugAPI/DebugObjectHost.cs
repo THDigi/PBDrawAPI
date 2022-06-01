@@ -5,7 +5,6 @@ using IMyProgrammableBlock = Sandbox.ModAPI.Ingame.IMyProgrammableBlock;
 
 namespace Digi.PBDebugAPI
 {
-    // TODO: rename file same as the class after commit
     public class DebugObjectHost
     {
         // Important for IDs to start from 1 to avoid default values being used to remove, such as HudNotification(ref id) where id is just a default value field.

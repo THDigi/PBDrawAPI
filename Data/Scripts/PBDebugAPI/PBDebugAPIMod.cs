@@ -16,10 +16,8 @@ using IMyProgrammableBlock = Sandbox.ModAPI.Ingame.IMyProgrammableBlock;
 
 namespace Digi.PBDebugAPI
 {
-    // TODO: rename file like class + rename solution
-
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
-    public class PBDebugMod : MySessionComponentBase
+    public class PBDebugAPIMod : MySessionComponentBase
     {
         const int LimitObjectsPerPB = 1000;
 

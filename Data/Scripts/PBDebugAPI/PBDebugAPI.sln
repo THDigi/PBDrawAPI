@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1145
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBDrawAPI", "PBDrawAPI.csproj", "{6A13F79F-0263-4EA9-93F9-D6D4B93F7CC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBDebugAPI", "PBDebugAPI.csproj", "{6A13F79F-0263-4EA9-93F9-D6D4B93F7CC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,12 +11,12 @@ namespace Digi.PBDebugAPI
         public readonly string PropertyId;
         public bool Created { get; private set; }
 
-        private readonly PBDebugMod Mod;
+        private readonly PBDebugAPIMod Mod;
 
         ImmutableDictionary<string, Delegate> Functions;
         ImmutableDictionary<string, Delegate>.Builder Builder;
 
-        public APIHandler(PBDebugMod mod, string propertyId)
+        public APIHandler(PBDebugAPIMod mod, string propertyId)
         {
             Mod = mod;
             PropertyId = propertyId;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Sandbox.Definitions;
 using Sandbox.ModAPI;
 using VRage.Collections;
@@ -13,8 +11,6 @@ using BlendTypeEnum = VRageRender.MyBillboard.BlendTypeEnum;
 
 namespace Digi.PBDebugAPI
 {
-    // TODO: rename file to DebugObjects
-
     public interface IDrawObject { } // categorization for RemoveDraw()
 
     public abstract class DebugObjectBase

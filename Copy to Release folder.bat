@@ -1,5 +1,5 @@
 @echo off
-set REPLACE_IN_PATH=%APPDATA%\SpaceEngineers\Mods\PBDrawAPI
+set REPLACE_IN_PATH=%APPDATA%\SpaceEngineers\Mods\PBDebugAPI
 
 rmdir "%REPLACE_IN_PATH%" /S /Q
 
