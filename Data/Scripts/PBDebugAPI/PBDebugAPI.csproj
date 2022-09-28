@@ -125,6 +125,7 @@
   <ItemGroup>
     <Compile Include="APICalls.cs" />
     <Compile Include="ChatCommands.cs" />
+    <Compile Include="ForPB_Dummy.cs" />
     <Compile Include="ForPB_Lite.cs" />
     <Compile Include="ForPB.cs" />
     <Compile Include="DebugObjects.cs" />
