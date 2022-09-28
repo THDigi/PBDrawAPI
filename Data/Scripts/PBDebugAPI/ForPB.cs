@@ -22,12 +22,19 @@ namespace PB
         {
             Debug = new DebugAPI(this);
 
+
             Debug.PrintChat("Hello there.");
+
 
             // This allows local player to hold R and using mouse scroll, change that initial 5 by 0.05 per scroll. It will show up on HUD too when you do this.
             // Then the returned id can be used to retrieve this value.
             // For simplicity sake you should only call AddAdjustNumber() in the constructor here.
             Debug.DeclareAdjustNumber(out YellowLengthId, YellowLengthDefault, 0.05, DebugAPI.Input.R, "Yellow line length");
+
+
+            // this will turn all Echo() calls into chat prints, not generally recommended but it can be an easy way to debug existing code.
+            //Echo = (msg) => Debug.PrintChat(msg);
+
 
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
         }
@@ -36,7 +43,10 @@ namespace PB
         {
             try
             {
+                // this is to make all drawables live a single run
                 Debug.RemoveDraw();
+                // other ways are (without this call) to use the seconds parameter so they expire on their own, or track the returned integer id and Debug.Remove(id)
+
 
                 // various usage examples:
 
