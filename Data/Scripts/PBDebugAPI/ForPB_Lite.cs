@@ -75,6 +75,17 @@ namespace PB.Lite
             public int GetTick() => _tk?.Invoke() ?? -1;
             Func<int> _tk;
 
+            public TimeSpan GetTimestamp() => _ts?.Invoke() ?? TimeSpan.Zero;
+            Func<TimeSpan> _ts;
+
+            public MeasureToken Measure(Action<TimeSpan> call) => new MeasureToken(this, call);
+            public struct MeasureToken : IDisposable
+            {
+                DebugAPI A; TimeSpan S; Action<TimeSpan> C;
+                public MeasureToken(DebugAPI api, Action<TimeSpan> call) { A = api; C = call; S = A.GetTimestamp(); }
+                public void Dispose() { C?.Invoke(A.GetTimestamp() - S); }
+            }
+
             public enum Style { Solid, Wireframe, SolidAndWireframe }
             public enum Input { MouseLeftButton, MouseRightButton, MouseMiddleButton, MouseExtraButton1, MouseExtraButton2, LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt, Tab, Shift, Control, Alt, Space, PageUp, PageDown, End, Home, Insert, Delete, Left, Up, Right, Down, D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, NumPad0, NumPad1, NumPad2, NumPad3, NumPad4, NumPad5, NumPad6, NumPad7, NumPad8, NumPad9, Multiply, Add, Separator, Subtract, Decimal, Divide, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12 }
             public enum Font { Debug, White, Red, Green, Blue, DarkBlue }
@@ -105,6 +116,7 @@ namespace PB.Lite
                     Assign(out _adj, methods["DeclareAdjustNumber"]);
                     Assign(out _getAdj, methods["GetAdjustNumber"]);
                     Assign(out _tk, methods["Tick"]);
+                    Assign(out _ts, methods["Timestamp"]);
                     RemoveAll();
                     ModDetected = true;
                 }

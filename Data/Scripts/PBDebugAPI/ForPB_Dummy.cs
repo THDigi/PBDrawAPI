@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using Sandbox.ModAPI.Interfaces;
 using VRageMath;
 // avoiding ambiguity errors with mod compiler adding mod namespaces
-using IMyProgrammableBlock = Sandbox.ModAPI.Ingame.IMyProgrammableBlock;
-using UpdateFrequency = Sandbox.ModAPI.Ingame.UpdateFrequency;
 using UpdateType = Sandbox.ModAPI.Ingame.UpdateType;
 using MyGridProgram = Sandbox.ModAPI.Ingame.MyGridProgram;
 
@@ -39,14 +35,14 @@ namespace PB.Dummy
             public void DeclareAdjustNumber(out int id, double initial, double step = 0.05, Input modifier = Input.Control, string label = null) => id = -1;
             public double GetAdjustNumber(int id, double noModDefault = 1) => noModDefault;
             public int GetTick() => -1;
-
+            public TimeSpan GetTimestamp() => TimeSpan.Zero;
+            public MeasureToken Measure(Action<TimeSpan> call) => new MeasureToken(this, call);
+            public struct MeasureToken : IDisposable { public MeasureToken(DebugAPI api, Action<TimeSpan> call) { } public void Dispose() { } }
             public enum Style { Solid, Wireframe, SolidAndWireframe }
             public enum Input { MouseLeftButton, MouseRightButton, MouseMiddleButton, MouseExtraButton1, MouseExtraButton2, LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt, Tab, Shift, Control, Alt, Space, PageUp, PageDown, End, Home, Insert, Delete, Left, Up, Right, Down, D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, NumPad0, NumPad1, NumPad2, NumPad3, NumPad4, NumPad5, NumPad6, NumPad7, NumPad8, NumPad9, Multiply, Add, Separator, Subtract, Decimal, Divide, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12 }
             public enum Font { Debug, White, Red, Green, Blue, DarkBlue }
-
             const float DefaultThickness = 0.02f;
             const float DefaultSeconds = -1;
-
             public DebugAPI(MyGridProgram program, bool drawOnTopDefault = false) { }
         }
     }
