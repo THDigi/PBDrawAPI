@@ -220,7 +220,7 @@ namespace Digi.PBDebugAPI
                     throw new Exception($"GetAdjustNumber(): Given id={id} is not a {nameof(AdjustNumber)}, but a {drawObj.GetType().Name}");
             }
 
-            throw new Exception($"GetAdjustNumber(): No {nameof(AdjustNumber)} with id={id}");
+            throw new Exception($"GetAdjustNumber(): No {nameof(AdjustNumber)} with id={id}. (Did you RemoveAll() instead of RemoveDraw() ?)");
             //return double.NaN;
         }
 
