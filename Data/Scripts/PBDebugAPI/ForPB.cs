@@ -45,6 +45,12 @@ namespace PB
         {
             try
             {
+                // example of changing on-top draw for everything that doesn't specify onTop for themselves.
+                if(string.Equals(argument, "ontop", StringComparison.OrdinalIgnoreCase))
+                {
+                    Debug.DefaultOnTop = !Debug.DefaultOnTop;
+                }
+
                 // measure the entire thing, not really necessary but showing that the measure statements can be stacked.
                 // just keep in mind that stacking them does include the debug API overhead.
                 using(Debug.Measure((t) => Debug.PrintHUD($"total measured {t.TotalMilliseconds} ms")))
@@ -146,6 +152,11 @@ namespace PB
             public readonly bool ModDetected;
 
             /// <summary>
+            /// Changing this will affect OnTop draw for all future draws that don't have it specified.
+            /// </summary>
+            public bool DefaultOnTop;
+
+            /// <summary>
             /// Recommended to be used at start of Main(), unless you wish to draw things persistently and remove them manually.
             /// <para>Removes everything except AdjustNumber and chat messages.</para>
             /// </summary>
@@ -166,22 +177,22 @@ namespace PB
             public void Remove(int id) => _remove?.Invoke(_pb, id);
             Action<IMyProgrammableBlock, int> _remove;
 
-            public int DrawPoint(Vector3D origin, Color color, float radius = 0.2f, float seconds = DefaultSeconds, bool? onTop = null) => _point?.Invoke(_pb, origin, color, radius, seconds, onTop ?? _defaultOnTop) ?? -1;
+            public int DrawPoint(Vector3D origin, Color color, float radius = 0.2f, float seconds = DefaultSeconds, bool? onTop = null) => _point?.Invoke(_pb, origin, color, radius, seconds, onTop ?? DefaultOnTop) ?? -1;
             Func<IMyProgrammableBlock, Vector3D, Color, float, float, bool, int> _point;
 
-            public int DrawLine(Vector3D start, Vector3D end, Color color, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _line?.Invoke(_pb, start, end, color, thickness, seconds, onTop ?? _defaultOnTop) ?? -1;
+            public int DrawLine(Vector3D start, Vector3D end, Color color, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _line?.Invoke(_pb, start, end, color, thickness, seconds, onTop ?? DefaultOnTop) ?? -1;
             Func<IMyProgrammableBlock, Vector3D, Vector3D, Color, float, float, bool, int> _line;
 
-            public int DrawAABB(BoundingBoxD bb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _aabb?.Invoke(_pb, bb, color, (int)style, thickness, seconds, onTop ?? _defaultOnTop) ?? -1;
+            public int DrawAABB(BoundingBoxD bb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _aabb?.Invoke(_pb, bb, color, (int)style, thickness, seconds, onTop ?? DefaultOnTop) ?? -1;
             Func<IMyProgrammableBlock, BoundingBoxD, Color, int, float, float, bool, int> _aabb;
 
-            public int DrawOBB(MyOrientedBoundingBoxD obb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _obb?.Invoke(_pb, obb, color, (int)style, thickness, seconds, onTop ?? _defaultOnTop) ?? -1;
+            public int DrawOBB(MyOrientedBoundingBoxD obb, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _obb?.Invoke(_pb, obb, color, (int)style, thickness, seconds, onTop ?? DefaultOnTop) ?? -1;
             Func<IMyProgrammableBlock, MyOrientedBoundingBoxD, Color, int, float, float, bool, int> _obb;
 
-            public int DrawSphere(BoundingSphereD sphere, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, int lineEveryDegrees = 15, float seconds = DefaultSeconds, bool? onTop = null) => _sphere?.Invoke(_pb, sphere, color, (int)style, thickness, lineEveryDegrees, seconds, onTop ?? _defaultOnTop) ?? -1;
+            public int DrawSphere(BoundingSphereD sphere, Color color, Style style = Style.Wireframe, float thickness = DefaultThickness, int lineEveryDegrees = 15, float seconds = DefaultSeconds, bool? onTop = null) => _sphere?.Invoke(_pb, sphere, color, (int)style, thickness, lineEveryDegrees, seconds, onTop ?? DefaultOnTop) ?? -1;
             Func<IMyProgrammableBlock, BoundingSphereD, Color, int, float, int, float, bool, int> _sphere;
 
-            public int DrawMatrix(MatrixD matrix, float length = 1f, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _matrix?.Invoke(_pb, matrix, length, thickness, seconds, onTop ?? _defaultOnTop) ?? -1;
+            public int DrawMatrix(MatrixD matrix, float length = 1f, float thickness = DefaultThickness, float seconds = DefaultSeconds, bool? onTop = null) => _matrix?.Invoke(_pb, matrix, length, thickness, seconds, onTop ?? DefaultOnTop) ?? -1;
             Func<IMyProgrammableBlock, MatrixD, float, float, float, bool, int> _matrix;
 
             /// <summary>
@@ -276,7 +287,6 @@ namespace PB
             const float DefaultSeconds = -1;
 
             IMyProgrammableBlock _pb;
-            bool _defaultOnTop;
 
             /// <summary>
             /// NOTE: if mod is not present then methods will simply not do anything, therefore you can leave the methods in your released code.
@@ -287,7 +297,7 @@ namespace PB
             {
                 if(program == null) throw new Exception("Pass `this` into the API, not null.");
 
-                _defaultOnTop = drawOnTopDefault;
+                DefaultOnTop = drawOnTopDefault;
                 _pb = program.Me;
 
                 var methods = _pb.GetProperty("DebugAPI")?.As<IReadOnlyDictionary<string, Delegate>>()?.GetValue(_pb);
