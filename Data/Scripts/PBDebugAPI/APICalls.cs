@@ -274,11 +274,11 @@ namespace Digi.PBDebugAPI
             return MyAPIGateway.Session.GameplayFrameCounter;
         }
 
-        static readonly double TickFrequency = (double)TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
-
         TimeSpan API_GetTimestamp()
         {
-            return TimeSpan.FromTicks((long)(Stopwatch.GetTimestamp() * TickFrequency));
+            long swTicks = Stopwatch.GetTimestamp();
+            double tickMod = (double)TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency; // stopwatch ticks to timespan ticks
+            return TimeSpan.FromTicks((long)(swTicks * tickMod));
         }
         #endregion
 
