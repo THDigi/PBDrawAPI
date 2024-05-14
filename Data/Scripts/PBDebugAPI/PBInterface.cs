@@ -79,7 +79,7 @@ namespace Digi.PBDebugAPI
             if(pb == null)
                 throw new Exception("The API can only be retrieved from a PB");
 
-            Mod.VerifyAPI(pb);
+            PBDebugAPIMod.ValidationProgram.VerifyAPI(pb);
 
             return Functions;
         }

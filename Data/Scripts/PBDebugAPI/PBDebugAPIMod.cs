@@ -69,12 +69,6 @@ namespace Digi.PBDebugAPI
             PBInterface?.Dispose();
         }
 
-        public void VerifyAPI(IMyProgrammableBlock pb)
-        {
-            if(!ValidationProgram.APIVerified)
-                new ValidationProgram(pb);
-        }
-
         public override void Draw()
         {
             try
