@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Sandbox.ModAPI.Interfaces;
 using VRageMath;
-// avoiding ambiguity errors with mod compiler adding mod namespaces
+
+// avoiding ambiguity errors with mod compiler adding mod namespaces.
+// remove all of these if copying the entire file to a PB project.
 using IMyProgrammableBlock = Sandbox.ModAPI.Ingame.IMyProgrammableBlock;
 using IMyTerminalBlock = Sandbox.ModAPI.Ingame.IMyTerminalBlock;
 using IMyInventory = VRage.Game.ModAPI.Ingame.IMyInventory;
@@ -10,7 +12,7 @@ using UpdateFrequency = Sandbox.ModAPI.Ingame.UpdateFrequency;
 using UpdateType = Sandbox.ModAPI.Ingame.UpdateType;
 using MyGridProgram = Sandbox.ModAPI.Ingame.MyGridProgram;
 
-namespace PB
+namespace IngameScript
 {
     // Copy the DebugAPI class to your class and use it like shown here.
     public class Program : MyGridProgram

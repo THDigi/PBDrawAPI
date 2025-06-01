@@ -7,7 +7,7 @@ using VRage.Game.Components.Interfaces;
 using VRage.ObjectBuilders;
 using VRage.Utils;
 using VRageMath;
-using static PB.Program;
+using static IngameScript.Program;
 using IMyProgrammableBlock = Sandbox.ModAPI.Ingame.IMyProgrammableBlock;
 
 namespace Digi.PBDebugAPI

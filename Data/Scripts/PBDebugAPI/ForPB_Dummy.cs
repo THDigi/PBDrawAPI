@@ -1,12 +1,13 @@
 ﻿using System;
 using VRageMath;
-// avoiding ambiguity errors with mod compiler adding mod namespaces
+
+// avoiding ambiguity errors with mod compiler adding mod namespaces.
+// remove all of these if copying the entire file to a PB project.
 using UpdateType = Sandbox.ModAPI.Ingame.UpdateType;
 using MyGridProgram = Sandbox.ModAPI.Ingame.MyGridProgram;
 
-namespace PB.Dummy
+namespace IngameScript.Dummy
 {
-    // This is the dummy version if you wish to minimize how many characters the API uses without removing it from your code.
     public class Program : MyGridProgram
     {
         public Program()
@@ -17,6 +18,7 @@ namespace PB.Dummy
         {
         }
 
+        // This is the dummy version if you wish to minimize how many characters the API uses without removing it from your code.
         public class DebugAPI
         {
             public readonly bool ModDetected;
